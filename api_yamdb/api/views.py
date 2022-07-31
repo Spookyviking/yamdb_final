@@ -10,13 +10,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from users.models import User
 from reviews import models
-from . import filters
-from . import serializers
-from . import mixins
-from . import permissions
+from users.models import User
+
+from . import filters, mixins, permissions, serializers
 
 
 class UsersViewSet(viewsets.ModelViewSet):

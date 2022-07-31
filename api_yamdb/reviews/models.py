@@ -1,6 +1,6 @@
 from django.db import models
-
 from users import models as usermodels
+
 from .validators import validate_year
 
 SCORE_REVIEW = (

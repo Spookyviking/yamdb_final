@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from api_yamdb.settings import EMPTY_VALUE_FOR_ADMIN_PY
+
 from . import models
 
 
