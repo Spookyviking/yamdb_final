@@ -10,7 +10,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # для прохождения тестов выставлены дефолтные значения
 SECRET_KEY = os.getenv('SECRET_KEY', default='rk7fiss1=c4dses4g@m_*n=iv+m$o5^+nn=!6ezran*nw^vie(')
 
-DEBUG = os.getenv('DEBUG', default='False')
+# DEBUG = os.getenv('DEBUG', default='False')
+DEBUG = 'False'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='127.0.0.1').split(' ')
 
