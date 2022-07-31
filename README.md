@@ -15,95 +15,95 @@
 [![GitHub%20Actions](https://img.shields.io/badge/-GitHub%20Actions-464646?style=flat&logo=GitHub%20actions&logoColor=56C0C0&color=008080)](https://github.com/features/actions)
 [![Yandex.Cloud](https://img.shields.io/badge/-Yandex.Cloud-464646?style=flat&logo=Yandex.Cloud&logoColor=56C0C0&color=008080)](https://cloud.yandex.ru/)
 
+## Описание проекта
+Проект **YaMDb** собирает **отзывы (Review)** пользователей на **произведения (Titles)**. Произведения делятся на категории: «Книги», «Фильмы», «Музыка». Список категорий (*Category*) может быть расширен.
 
-## Workflow
-* tests - Проверка кода на соответствие стандарту PEP8 (с помощью пакета flake8) и запуск pytest. Дальнейшие шаги выполнятся только если push был в ветку master или main.
-* build_and_push_to_docker_hub - Сборка и доставка докер-образов на Docker Hub
-* deploy - Автоматический деплой проекта на боевой сервер. Выполняется копирование файлов из репозитория на сервер:
-* send_message - Отправка уведомления в Telegram
+Сами произведения в **YaMDb** не хранятся, здесь нельзя посмотреть фильм или послушать музыку.
 
-### Подготовка для запуска workflow
-Создайте и активируйте виртуальное окружение, обновите pip:
-```
-python3 -m venv venv
-. venv/bin/activate
-python3 -m pip install --upgrade pip
-```
-Запустите автотесты:
-```
-pytest
-```
-Отредактируйте файл `nginx/default.conf` и в строке `server_name` впишите IP виртуальной машины (сервера).  
-Скопируйте подготовленные файлы `docker-compose.yaml` и `nginx/default.conf` из вашего проекта на сервер:
+В каждой категории есть **произведения**: книги, фильмы или музыка. Например, в категории «Книги» могут быть произведения «Винни Пух и все-все-все» и «Марсианские хроники», а в категории «Музыка» — песня «Давеча» группы «Насекомые» и вторая сюита Баха.
 
-Зайдите в репозиторий на локальной машине и отправьте файлы на сервер.
-Можно сделать 2умя способами, первый склонировав репозиторий, переместив нужные файлы командой mv
-после чего удалить остаток 
-```
-rm -rf hw05_final
-```
-Или 2ой вариант:
-```
-scp docker-compose.yaml <username>@<host>/home/<username>/docker-compose.yaml
-sudo mkdir nginx
-scp default.conf <username>@<host>/home/<username>/nginx/default.conf
-```
-В репозитории на Гитхабе добавьте данные в `Settings - Secrets - Actions secrets`:
-```
-DOCKER_USERNAME - имя пользователя в DockerHub
-DOCKER_PASSWORD - пароль пользователя в DockerHub
-HOST - ip-адрес сервера
-USER - пользователь
-SSH_KEY - приватный ssh-ключ (публичный должен быть на сервере)
-PASSPHRASE - кодовая фраза для ssh-ключа
-DB_ENGINE - django.db.backends.postgresql
-DB_HOST - db
-DB_PORT - 5432
-SECRET_KEY - секретный ключ приложения django (необходимо чтобы были экранированы или отсутствовали скобки)
-ALLOWED_HOSTS - список разрешённых адресов
-TELEGRAM_TO - id своего телеграм-аккаунта (можно узнать у @userinfobot, команда /start)
-TELEGRAM_TOKEN - токен бота (получить токен можно у @BotFather, /token, имя бота)
-DB_NAME - postgres (по умолчанию)
-POSTGRES_USER - postgres (по умолчанию)
-POSTGRES_PASSWORD - postgres (по умолчанию)
-```
+Произведению может быть присвоен **жанр (Genre)** из списка предустановленных (например, «Сказка», «Рок» или «Артхаус»). Новые жанры может создавать только администратор.
 
-## Как запустить проект на сервере:
+Благодарные или возмущённые читатели оставляют к произведениям текстовые **отзывы (*Review*)** и ставят произведению оценку в диапазоне от одного до десяти (целое число); из пользовательских оценок формируется усреднённая оценка произведения — **рейтинг** (целое число). На одно произведение пользователь может оставить только один отзыв.
 
 
-Установите Docker и Docker-compose:
+## Техническое описание проекта
+
+К проекту по адресу http://localhost/redoc/ подключена документация **API YaMDb**.
+В ней описаны возможные запросы к API и структура ожидаемых ответов.
+Для каждого запроса указаны уровни прав доступа: пользовательские роли, которым разрешён запрос.
+
+## Технологии:
+* Python 3.7
+* Django 2
+* Docker
+* Nginx
+* Github Action
+
+## Описание Workflow
+
+Workflow состоит из четырёх шагов:
+1. Проверка кода на соответствие PEP8 и запуск тестов проекта;
+2. Сборка и публикация образа на DockerHub;
+3. Автоматический деплой на удаленный сервер;
+4. Отправка telegram-ботом уведомления в чат.
+
+## Установка:
+1. Клонируйте репозиторий на локальную машину.
+   ```https://github.com/Spookyviking/yamdb_final.git```
+2. Установите виртуальное окружение в папке проекта.
 ```
-sudo apt install docker.io
+cd yamdb_final
+python -m venv venv
+```
+3. Активируйте виртуальное окружение.
+   ```source venv\Scripts\activate```
+4. Установите зависимости.
+```
+python -m pip install --upgrade pip
+pip install -r api_yamdb\requirements.txt
+```
+## Запуск проекта в контейнерах
+1. Перейдите в директорию `infra/`, заполните файл .venv_example и после этого переименуйте его в .env
+2. Выполните команду:
+   ```docker-compose up -d --build```
+3. Для остановки контейнеров из директории `infra/` выполните команду:
+   ```docker-compose down -v```
+4. Загрузка данных для примера из папки `infra/`
+   ```docker-compose exec web python manage.py loaddata fixtures.json```
+
+## Deploy проекта на удаленный сервер
+Предварительно для автоматического деплоя необходимо подготовить сервер:
+1. Установить docker: ```sudo apt install docker.io```
+2. Установите docker-compose:
+```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 ```
-Проверьте корректность установки Docker-compose:
-```
-sudo  docker-compose --version
-```
-Создайте папку `nginx`:
-```
-mkdir nginx
-```
-### После успешного деплоя:
-Соберите статические файлы (статику):
-```
-docker-compose exec web python manage.py collectstatic --no-input
-```
-Примените миграции:
-```
-docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate --noinput
-```
-Создайте суперпользователя:
-```
-docker-compose exec web python manage.py createsuperuser
-```
-или
-```
-docker-compose exec web python manage.py loaddata fixtures.json
-```
+3. Скопируйте файлы docker-compose.yaml и nginx/default.conf из проекта на сервер в
+home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/default.conf соответственно.
+4. В Secrets GitHub Actions форкнутого репозитория добавить переменные окружения:
+   * SSH_KEY - ssh private key для доступа к удаленному серверу
+   * HOST - public id хоста
+   * USER - имя user-а на удаленном сервере
+   * PASSPHRASE - пароль подтверждения подключения по ssh-key
+   * DOCKER_USERNAME - username на DockerHub
+   * DOCKER_PASSWORD - пароль на DockerHub
+   * POSTGRES_USER - имя пользователя для базы данных
+   * POSTGRES_PASSWORD - пароль для подключения к базе
+   * DB_ENGINE - настойка подключения django-проекта к postgresql
+   * DB_NAME - имя базы данных
+   * DB_HOST - название сервиса (контейнера)
+   * DB_PORT - порт для подключения к БД
+   * DJANGO_SU_ADMIN - имя суперюзера в django-проекте
+   * DJANGO_SU_EMAIL - почта суперюзера в django-проекте
+   * DJANGO_SU_PASSWORD - пароль суперюзера в django-проекте
+   * TELEGRAM_TOKEN - token telegram-бота
+   * TELEGRAM_TO - id пользователя, которому будут приходить оповещения
+об успешном деплое
 
+## Ссылка на проект
+Проект развернут по адресу http://51.250.96.184/api/v1/
 
-## Авторы
-Максим Остапенко https://github.com/Spookyviking
+## Автор:
+[Максим Остапенко](https://github.com/Spookyviking)

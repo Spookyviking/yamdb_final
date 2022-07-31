@@ -7,7 +7,6 @@ services:
       - /var/lib/postgresql/data/
     env_file:
       - ./.env
-
   web:
     image: spookyviking/api_yamdb:latest
     command: >
@@ -24,8 +23,7 @@ services:
     depends_on:
       - db
     env_file:
-      - ./.env
-
+      - ./.env 
   nginx:
     image: nginx:1.21.3-alpine
     ports:
@@ -36,7 +34,6 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - web
-
 volumes:
   static_value:
   media_value:
