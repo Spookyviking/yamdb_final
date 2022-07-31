@@ -37,10 +37,9 @@ class Command(BaseCommand):
         )
 
     def get_csv_file(self, filename):
-        file_path = os.path.join(
+        return os.path.join(
             BASE_DIR, 'static', 'data', filename
         )
-        return file_path
 
     def handle(self, *args, **options):
         filename = options['filename']
