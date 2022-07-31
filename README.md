@@ -103,7 +103,7 @@ home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/defau
 об успешном деплое
 
 ## Ссылка на проект
-Проект развернут по адресу http://51.250.96.184/api/v1/
+Проект развернут по адресу http://51.250.96.184/api/v1/ или http://yamdbspookyviking.hopto.org/api/v1/
 
 ## Автор:
 [Максим Остапенко](https://github.com/Spookyviking)
