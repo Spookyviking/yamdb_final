@@ -69,22 +69,41 @@ pip install -r api_yamdb\requirements.txt
    ```docker-compose up -d --build```
 3. Для остановки контейнеров из директории `infra/` выполните команду:
    ```docker-compose down -v```
-4. Загрузка данных для примера из папки `infra/`
-   ```docker-compose exec web python manage.py loaddata fixtures.json```
-5. ```(опционально) docker-compose exec web python manage.py makemigrations docker-compose exec web python manage.py migrate```
-
-Для входа внутрь контейнера используйте команду `exec`:
-
-``` docker-compose exec web sh ```
-
+5. ```(опционально) docker-compose exec web python manage.py makemigrations  docker-compose exec web python manage.py migrate```  
+Создайте суперпользователя:
+```
+docker-compose exec web python manage.py createsuperuser
+```
+При необходимости наполните базу тестовыми данными из ../yamdb_final/api_yamdb/:
+```
+docker exec -i infra_web_1 python manage.py loaddata --format=json - < fixtures.json
+```
 или
+```
+docker-compose exec web python manage.py loaddata fixtures.json
+```
 
-``` docker-compose exec web python manage.py shell ```
-
-или:
-
-``` docker exec -it <container_id> bash ```
-
+Также можно выполнить эти действия внутри контейнера. Отобразите список работающих контейнеров:
+```
+sudo docker container ls -a
+```
+В списке контейнеров копируйте CONTAINER ID контейнера username/api_yamdb:latest (username - имя пользователя на DockerHub).   
+Выполните вход в контейнер:
+```
+sudo docker exec -it <CONTAINER_ID> bash
+```
+Внутри контейнера выполните миграции:
+```
+python manage.py migrate
+```
+При необходимости наполните базу данных начальными тестовыми данными:
+```
+python3 manage.py shell
+>>> from django.contrib.contenttypes.models import ContentType
+>>> ContentType.objects.all().delete()
+>>> quit()
+python manage.py loaddata infra/fixtures.json
+```
 ## Deploy проекта на удаленный сервер
 Предварительно для автоматического деплоя необходимо подготовить сервер:
 1. Установите соединение с сервером:
