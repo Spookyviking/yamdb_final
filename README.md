@@ -50,7 +50,7 @@ Workflow состоит из четырёх шагов:
 
 ## Установка:
 1. Клонируйте репозиторий на локальную машину.
-   ```https://github.com/spookyviking/yamdb_final.git```
+   ```https://github.com/Spookyviking/yamdb_final.git```
 2. Установите виртуальное окружение в папке проекта.
 ```
 cd yamdb_final
@@ -100,19 +100,21 @@ docker-compose exec web python manage.py migrate```
 
 ``` sudo systemctl stop nginx ```
 
-4. Установить docker: ```sudo apt install docker.io```
+4. Установить docker:
+``` sudo apt install docker.io ```
 5. Установите docker-compose:
 
-```sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose```
+``` sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose ```
 
 6. Проверьте корректность установки Docker-compose:
 
-```sudo  docker-compose --version```
+``` sudo  docker-compose --version ```
 
 7. Скопируйте файлы docker-compose.yaml и nginx/default.conf из проекта на сервер в
 home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/default.conf соответственно.
 8. В Secrets GitHub Actions форкнутого репозитория добавить переменные окружения:
+```
    * SSH_KEY - ssh private key для доступа к удаленному серверу
    * HOST - public id хоста
    * USER - имя user-а на удаленном сервере
@@ -127,7 +129,8 @@ home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/defau
    * DB_PORT - порт для подключения к БД
    * TELEGRAM_TOKEN - token telegram-бота
    * TELEGRAM_TO - id пользователя, которому будут приходить оповещения
-об успешном деплое
+об успешном деплое.
+```
 
 При внесении любых изменений в проект, после коммита и пуша
 ```
