@@ -71,45 +71,45 @@ pip install -r api_yamdb\requirements.txt
    ```docker-compose down -v```
 4. Загрузка данных для примера из папки `infra/`
    ```docker-compose exec web python manage.py loaddata fixtures.json```
-5. (опционально) docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate
-```
+5. ```(опционально) docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate```
+
 Для входа внутрь контейнера используйте команду `exec`:
-```
-docker-compose exec web sh
-```
+
+``` docker-compose exec web sh ```
+
 или
-```
-docker-compose exec web python manage.py shell
-```
+
+``` docker-compose exec web python manage.py shell ```
+
 или:
-```
-docker exec -it <container_id> bash
+
+``` docker exec -it <container_id> bash ```
 
 ## Deploy проекта на удаленный сервер
 Предварительно для автоматического деплоя необходимо подготовить сервер:
 1. Установите соединение с сервером:
-```
-ssh username@server_address
-```
+
+``` ssh username@server_address ```
+
 2. Проверьте статус nginx:
-```
-sudo service nginx status
-```
+
+``` sudo service nginx status ```
+
 3. Если nginx запущен, остановите его:
-```
-sudo systemctl stop nginx
-```
+
+``` sudo systemctl stop nginx ```
+
 4. Установить docker: ```sudo apt install docker.io```
 5. Установите docker-compose:
-```
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-```
+
+```sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose```
+
 6. Проверьте корректность установки Docker-compose:
-```
-sudo  docker-compose --version
-```
+
+```sudo  docker-compose --version```
+
 7. Скопируйте файлы docker-compose.yaml и nginx/default.conf из проекта на сервер в
 home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/default.conf соответственно.
 8. В Secrets GitHub Actions форкнутого репозитория добавить переменные окружения:
@@ -128,7 +128,7 @@ home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/defau
    * TELEGRAM_TOKEN - token telegram-бота
    * TELEGRAM_TO - id пользователя, которому будут приходить оповещения
 об успешном деплое
-```
+
 При внесении любых изменений в проект, после коммита и пуша
 ```
 git add .
