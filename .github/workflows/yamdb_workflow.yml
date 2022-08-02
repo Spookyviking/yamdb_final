@@ -63,7 +63,7 @@ jobs:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' 
     steps:
       - name: executing remote ssh commands to deploy
-        uses: spookyviking/ssh-action@master
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
