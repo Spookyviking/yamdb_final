@@ -60,9 +60,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
     steps:
-      - name: executing remote ssh commands to deploy
+      - uses: actions/checkout@v2
+      - name: copy deploy files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          overwrite: true
+          source: './nginx_deploy.conf, ./docker-compose.yaml, ./.env'
+          target: 'app'
+          - name: deploy project
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -70,21 +81,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/api_yamdb:latest
-            sudo docker-compose stop
-            sudo docker-compose rm web
-            sudo rm .env
-            sudo touch .env
-            echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
-            echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            # echo DJANGO_SU_ADMIN=${{ secrets.DJANGO_SU_ADMIN }} >> .env
-            # echo DJANGO_SU_EMAIL=${{ secrets.DJANGO_SU_EMAIL }} >> .env
-            # echo DJANGO_SU_PASSWORD=${{ secrets.DJANGO_SU_PASSWORD }} >> .env
-            sudo docker-compose up -d
+            cd ~/app
+            sudo docker-compose pull web
+            sudo docker-compose down
+            sudo docker-compose up --build -d
   send_message:
     runs-on: ubuntu-latest
     needs: deploy
