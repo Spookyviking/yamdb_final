@@ -71,8 +71,7 @@ pip install -r api_yamdb\requirements.txt
    ```docker-compose down -v```
 4. Загрузка данных для примера из папки `infra/`
    ```docker-compose exec web python manage.py loaddata fixtures.json```
-5. ```(опционально) docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate```
+5. ```(опционально) docker-compose exec web python manage.py makemigrations docker-compose exec web python manage.py migrate```
 
 Для входа внутрь контейнера используйте команду `exec`:
 
@@ -100,9 +99,9 @@ docker-compose exec web python manage.py migrate```
 
 ``` sudo systemctl stop nginx ```
 
-4. Установить docker:
+4. Установить docker:  
 ``` sudo apt install docker.io ```
-5. Установите docker-compose:
+5. Установите docker-compose:  
 
 ``` sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose ```
