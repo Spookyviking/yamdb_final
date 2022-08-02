@@ -29,7 +29,7 @@
 
 ## Техническое описание проекта
 
-К проекту по адресу http://yamdbspookyviking.hopto.org/redoc/ подключена документация **API YaMDb**.
+К проекту по адресу http://51.250.96.184/redoc/ подключена документация **API YaMDb**.
 В ней описаны возможные запросы к API и структура ожидаемых ответов.
 Для каждого запроса указаны уровни прав доступа: пользовательские роли, которым разрешён запрос.
 
@@ -50,7 +50,7 @@ Workflow состоит из четырёх шагов:
 
 ## Установка:
 1. Клонируйте репозиторий на локальную машину.
-   ```https://github.com/Spookyviking/yamdb_final.git```
+   ```https://github.com/spookyviking/yamdb_final.git```
 2. Установите виртуальное окружение в папке проекта.
 ```
 cd yamdb_final
@@ -64,25 +64,55 @@ python -m pip install --upgrade pip
 pip install -r api_yamdb\requirements.txt
 ```
 ## Запуск проекта в контейнерах
-1. Перейдите в директорию `infra/`, заполните файл .venv_example и после этого переименуйте его в .env
+1. Перейдите в директорию `infra/`, заполните файл .env.template и после этого переименуйте его в .env
 2. Выполните команду:
    ```docker-compose up -d --build```
 3. Для остановки контейнеров из директории `infra/` выполните команду:
    ```docker-compose down -v```
 4. Загрузка данных для примера из папки `infra/`
    ```docker-compose exec web python manage.py loaddata fixtures.json```
+5. (опционально) docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
+```
+Для входа внутрь контейнера используйте команду `exec`:
+```
+docker-compose exec web sh
+```
+или
+```
+docker-compose exec web python manage.py shell
+```
+или:
+```
+docker exec -it <container_id> bash
 
 ## Deploy проекта на удаленный сервер
 Предварительно для автоматического деплоя необходимо подготовить сервер:
-1. Установить docker: ```sudo apt install docker.io```
-2. Установите docker-compose:
+1. Установите соединение с сервером:
+```
+ssh username@server_address
+```
+2. Проверьте статус nginx:
+```
+sudo service nginx status
+```
+3. Если nginx запущен, остановите его:
+```
+sudo systemctl stop nginx
+```
+4. Установить docker: ```sudo apt install docker.io```
+5. Установите docker-compose:
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 ```
-3. Скопируйте файлы docker-compose.yaml и nginx/default.conf из проекта на сервер в
+6. Проверьте корректность установки Docker-compose:
+```
+sudo  docker-compose --version
+```
+7. Скопируйте файлы docker-compose.yaml и nginx/default.conf из проекта на сервер в
 home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/default.conf соответственно.
-4. В Secrets GitHub Actions форкнутого репозитория добавить переменные окружения:
+8. В Secrets GitHub Actions форкнутого репозитория добавить переменные окружения:
    * SSH_KEY - ssh private key для доступа к удаленному серверу
    * HOST - public id хоста
    * USER - имя user-а на удаленном сервере
@@ -95,15 +125,22 @@ home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/defau
    * DB_NAME - имя базы данных
    * DB_HOST - название сервиса (контейнера)
    * DB_PORT - порт для подключения к БД
-   * DJANGO_SU_ADMIN - имя суперюзера в django-проекте
-   * DJANGO_SU_EMAIL - почта суперюзера в django-проекте
-   * DJANGO_SU_PASSWORD - пароль суперюзера в django-проекте
    * TELEGRAM_TOKEN - token telegram-бота
    * TELEGRAM_TO - id пользователя, которому будут приходить оповещения
 об успешном деплое
+```
+При внесении любых изменений в проект, после коммита и пуша
+```
+git add .
+git commit -m "..."
+git push
+```
+запускается набор блоков команд jobs (см. файл yamdb_workflow.yaml), т.к. команда `git push` является триггером workflow проекта.
 
 ## Ссылка на проект
-Проект развернут по адресу http://51.250.96.184/api/v1/ или http://yamdbspookyviking.hopto.org/api/v1/
+Проект развернут по адресу http://51.250.96.184/api/v1/
+http://51.250.96.184/admin
+http://51.250.96.184/redoc
 
 ## Автор:
 [Максим Остапенко](https://github.com/Spookyviking)
